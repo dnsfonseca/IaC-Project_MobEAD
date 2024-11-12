@@ -1,0 +1,15 @@
+---
+- name: Configurar IIS no Windows Server
+  hosts: windows
+  tasks:
+    - name: Instalar o IIS
+      win_feature:
+        name: Web-Server
+        state: present
+
+    - name: Iniciar o serviço IIS
+      win_service:
+        name: W3SVC
+        state: started
+        start_mode: auto
+
