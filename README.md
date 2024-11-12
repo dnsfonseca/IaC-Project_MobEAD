@@ -49,74 +49,13 @@ O projeto segue o seguinte fluxo:
 ### **Arquivos Importantes**
 
 #### **1. `inventory.ini`**
-```ini
-[windows]
-34.229.16.209 ansible_user=Administrator ansible_password='SuaSenhaSegura123!' ansible_port=5986 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore
-```
-
 #### **2. `playbook.yml`**
-```yaml
----
-- name: Configurar IIS no Windows Server
-  hosts: windows
-  tasks:
-    - name: Instalar o IIS
-      win_feature:
-        name: Web-Server
-        state: present
-
-    - name: Iniciar o serviço IIS
-      win_service:
-        name: W3SVC
-        state: started
-        start_mode: auto
-```
 
 ### **Como Executar o Ansible**
 ```bash
 cd ansible
 ansible-playbook -i inventory.ini playbook.yml
 ```
-
----
-
-## **Configuração do Pipeline no Jenkins**
-
-### **Jenkinsfile**
-```groovy
-pipeline {
-    agent any
-    environment {
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION = 'us-east-1'
-    }
-    stages {
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/seu-usuario/IaC-Project_MobEAD.git'
-            }
-        }
-        stage('Provisionar Infraestrutura com Terraform') {
-            steps {
-                dir('terraform') {
-                    sh 'terraform init'
-                    sh 'terraform apply -auto-approve'
-                }
-            }
-        }
-        stage('Configurar Servidor com Ansible') {
-            steps {
-                dir('ansible') {
-                    sh 'ansible-playbook -i inventory.ini playbook.yml'
-                }
-            }
-        }
-    }
-}
-```
-
----
 
 ## **Considerações de Segurança**
 
